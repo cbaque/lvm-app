@@ -1,4 +1,5 @@
 import FooterCustom from "@/components/ui/footer/Footer";
+import { titleFont } from "@/config/fonts";
 import Image from 'next/image';
 
 export default function AuthLayout({
@@ -11,10 +12,10 @@ export default function AuthLayout({
       <nav className="flex px-5 justify-between items-center w-full">
         <div>
           
-          <Image src={ `/logo.png` } alt="logo" width={100} height={50} className="h-full w-full mr-3"/>
-          {/* <span className={`${titleFont.className} antialiased font-bold`}>
+          {/* <Image src={ `/logo.png` } alt="logo" width={100} height={50} className="h-full w-full mr-3"/> */}
+          <span className={`${titleFont.className} antialiased font-bold`}>
             Lia Visual Medic
-          </span> */}
+          </span>
         </div>
       </nav>
 
