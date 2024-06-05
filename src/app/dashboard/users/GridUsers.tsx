@@ -1,13 +1,11 @@
 "use client";
 
-
 import { getUsers } from '@/actions';
 import { UserI } from '@/interfaces/user';
 import { CustomerServiceOutlined, DeleteOutlined, EditOutlined, ReloadOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Drawer, FloatButton, Space, Table, TableProps } from 'antd'
 import React, { useEffect, useState } from 'react'
 import FormNewUser from './FormNewUser';
-import { titleFont } from '@/config/fonts';
 import { tokenStore } from '@/store';
 
 const columns: TableProps<UserI>['columns'] = [
@@ -41,8 +39,8 @@ const columns: TableProps<UserI>['columns'] = [
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <EditOutlined  style={{cursor:'pointer', color:'#1677ff'}}/>
-          <DeleteOutlined style={{cursor:'pointer', color:'red'}}/>
+          <EditOutlined title='Editar'  style={{cursor:'pointer', color:'#1677ff'}}/>
+          <DeleteOutlined title='Eliminar' style={{cursor:'pointer', color:'red'}}/>
         </Space>
       ),
     }
@@ -55,9 +53,6 @@ const GridUsers = () => {
 
     const showOpenNewUser = () => { setOpenNew(true); };
     const closeNewUser = () => { setOpenNew(false); };
-
-    
-    const token = tokenStore(state => state.token);
 
     useEffect(() => {
         tokenStore.persist.rehydrate();

@@ -1,23 +1,19 @@
+import { postUsers } from '@/actions'
 import { titleFont } from '@/config/fonts'
 import { FileOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Collapse, Input, Space, Steps, Tabs } from 'antd'
 import React, { useState } from 'react'
+import { useFormState } from 'react-dom'
+
+type FormDataLoginProps = {
+  formData: any;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRoleButtonClick: (role: string) => void;
+}
 
 const FormNewUser = () => {
 
-  const steps = [
-    {
-      title: 'Usuario',
-      content: formDataLogin(),
-    },
-    {
-      title: 'Personal',
-      content: formDataPersonal(),
-    },
-  ];
   const [current, setCurrent] = useState(1);
-
-  const items = steps.map((item) => ({ key: item.title, title: item.title }));
 
   const next = () => {
     setCurrent(current + 1);
@@ -27,55 +23,100 @@ const FormNewUser = () => {
     setCurrent(current - 1);
   };
 
+  const [state, dispatch] = useFormState(postUsers, undefined);
+
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    role: '',
+    name: '',
+    dni: '',
+    phone: '',
+  });
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleRoleButtonClick = (role: string) => {
+    setFormData({
+      ...formData,
+      role: role,
+    });
+  };
+ 
+
+  const steps = [
+    {
+      title: 'Usuario',
+      content: <FormDataLogin formData={formData} onChange={handleInputChange} onRoleButtonClick={handleRoleButtonClick} />,
+              
+    },
+    {
+      title: 'Personal',
+      content: formDataPersonal(),
+    },
+  ];
+
+
+  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+
   return (
     <div>
 
-      <Steps current={current} items={items} />
-      <div style={{minHeight: 300}}>
-        {steps[current].content}
-      </div>
-      <div style={{marginTop: 24}}>
-        <div>
+      <form className="flex flex-col">
 
-          {current < steps.length - 1 && (
-            <Button className='absolute right-10' type="primary" onClick={() => next()}>
-              Siguiente
-            </Button>
-          )}
-          {current === steps.length - 1 && (
-            <Button type="primary" className='absolute right-10'>
-              Crear
-            </Button>
-          )}
-          {current > 0 && (
-            <Button className='absolute left-6' onClick={() => prev()}>
-              Anterior
-            </Button>
-          )}        
-
+        <Steps current={current} items={items} />
+        <div style={{minHeight: 300}}>
+            {steps[current].content}
         </div>
-      </div>
+        <div style={{marginTop: 24}}>
+          <div>
 
+            {current < steps.length - 1 && (
+              <Button className='absolute right-10' type="primary" htmlType="button" onClick={() => next()}>
+                Siguiente
+              </Button>
+            )}
+            {current === steps.length - 1 && (
+              <Button type="primary" className='absolute right-10' htmlType="submit">
+                Crear
+              </Button>
+            )}
+            {current > 0 && (
+              <Button className='absolute left-6' htmlType="button" onClick={() => prev()}>
+                Anterior
+              </Button>
+            )}        
+
+          </div>
+        </div>
+        
+      </form>
       
     </div>
   )
 }
 
-function formDataLogin() {
+const FormDataLogin = ({ formData, onChange, onRoleButtonClick }: FormDataLoginProps) => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   const handleRoleButtonClick = (role: any) => {
     setSelectedRole(role);
+    onRoleButtonClick(role); 
   };
 
   return (
-
-    
     <div className='flex flex-col w-80'>
 
         <div className='pt-5'>
           <label htmlFor="username">Usuario *</label>
-          <Input name='username' placeholder='¡Hola! &#128075; digita usuario' type='text' prefix={<UserOutlined />} />
+          <Input name='username' value={formData.username} onChange={onChange} placeholder='¡Hola! &#128075; digita usuario' type='text' prefix={<UserOutlined />} />
         </div>
 
         <div className='pt-5'>
@@ -93,7 +134,7 @@ function formDataLogin() {
           <div className='flex flex-row '>
             <Button type={selectedRole === 'Administrador' ? 'primary' : 'default'} onClick={() => handleRoleButtonClick('Administrador')}>Administrador</Button>
             <Button type={selectedRole === 'Doctor' ? 'primary' : 'default'} onClick={() => handleRoleButtonClick('Doctor')} className='mx-2 primary'>Doctor</Button>
-            <Button type={selectedRole === 'Licenciado' ? 'primary' : 'default'} onClick={() => handleRoleButtonClick('Licenciado')} className='mx-2'>Licenciado</Button>
+            <Button type={selectedRole === 'Licenciado' ? 'primary' : 'default'} onClick={() => handleRoleButtonClick ('Licenciado')} className='mx-2'>Licenciado</Button>
           </div>
         </div>          
 
