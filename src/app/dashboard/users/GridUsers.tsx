@@ -3,7 +3,7 @@
 
 import { getUsers } from '@/actions';
 import { UserI } from '@/interfaces/user';
-import { CustomerServiceOutlined, ReloadOutlined, UserAddOutlined } from '@ant-design/icons';
+import { CustomerServiceOutlined, DeleteOutlined, EditOutlined, ReloadOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Drawer, FloatButton, Space, Table, TableProps } from 'antd'
 import React, { useEffect, useState } from 'react'
 import FormNewUser from './FormNewUser';
@@ -36,6 +36,16 @@ const columns: TableProps<UserI>['columns'] = [
         dataIndex: ['people', 'phone'],
         key: 'people.phone',
     },
+    {
+      title: '',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <EditOutlined  style={{cursor:'pointer', color:'#1677ff'}}/>
+          <DeleteOutlined style={{cursor:'pointer', color:'red'}}/>
+        </Space>
+      ),
+    }
 ];
 
 const GridUsers = () => {
@@ -89,14 +99,7 @@ const GridUsers = () => {
               title="Crear nuevo usuario"
               width={520}
               open={openNew}
-              onClose={closeNewUser}
-              extra={
-                <Space>
-                  <Button type="primary">
-                    Crear
-                  </Button>
-                </Space>
-              }              
+              onClose={closeNewUser}             
             >
 
               <FormNewUser />
