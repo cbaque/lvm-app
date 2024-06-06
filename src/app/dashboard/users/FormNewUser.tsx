@@ -8,30 +8,42 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Input, Steps } from "antd";
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 
 
 type FormDataLoginProps = {
   formData: any;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRoleButtonClick: (role: string) => void;
+  roles : RoleI[]
+};
+
+type FormDataPersonalProps = {
+  formData: any;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const FormNewUser = () => {
   const [current, setCurrent] = useState(0);
-  const [roles, setRoles] = useState<RoleI>();
-
+  const [roles, setRoles] = useState<RoleI[]>([]);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    role: "",
+    name: "",
+    dni: "",
+    phone: "",
+  });
 
   useEffect(() => {
-    
     const fetchRoles = async () => {
-      const { data } = await getRoles();
-      setRoles(data);
+      const rolesData = await getRoles();
+      setRoles(rolesData.data);
     };
 
     fetchRoles();
-  });
-
+  }, []);
 
 
   const next = () => {
@@ -42,15 +54,6 @@ const FormNewUser = () => {
     setCurrent(current - 1);
   };
 
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "",
-    name: "",
-    dni: "",
-    phone: "",
-  });
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -75,12 +78,13 @@ const FormNewUser = () => {
           formData={formData}
           onChange={handleInputChange}
           onRoleButtonClick={handleRoleButtonClick}
+          roles = {roles || {}}
         />
       ),
     },
     {
       title: "Personal",
-      content: formDataPersonal(),
+      content: <FormDataPersonal formData={formData} onChange={handleInputChange} />,
     },
   ];
 
@@ -132,6 +136,7 @@ const FormDataLogin = ({
   formData,
   onChange,
   onRoleButtonClick,
+  roles
 }: FormDataLoginProps) => {
   const [selectedRole, setSelectedRole] = useState(null);
 
@@ -150,6 +155,7 @@ const FormDataLogin = ({
           onChange={onChange}
           placeholder="¡Hola! &#128075; digita usuario"
           type="text"
+          autoComplete="current-username"
           prefix={<UserOutlined />}
         />
       </div>
@@ -158,8 +164,11 @@ const FormDataLogin = ({
         <label htmlFor="email">Email *</label>
         <Input
           name="email"
+          value={formData.email}
+          onChange={onChange}          
           placeholder="Ej: example@tudominio.com.ec"
           type="email"
+          autoComplete="current-email"
           prefix={<MailOutlined />}
         />
       </div>
@@ -168,8 +177,11 @@ const FormDataLogin = ({
         <label htmlFor="password">Password *</label>
         <Input
           name="password"
+          value={formData.password}
+          onChange={onChange}            
           placeholder="agrega seguridad a tu inicio &#128274;"
           type="password"
+          autoComplete="current-password"
           prefix={<LockOutlined />}
         />
       </div>
@@ -177,58 +189,59 @@ const FormDataLogin = ({
       <div className="pt-5">
         <label htmlFor="password">Rol *</label>
         <div className="flex flex-row ">
-          <Button
-            type={selectedRole === "Administrador" ? "primary" : "default"}
-            onClick={() => handleRoleButtonClick("Administrador")}
-          >
-            Administrador
-          </Button>
-          <Button
-            type={selectedRole === "Doctor" ? "primary" : "default"}
-            onClick={() => handleRoleButtonClick("Doctor")}
-            className="mx-2 primary"
-          >
-            Doctor
-          </Button>
-          <Button
-            type={selectedRole === "Licenciado" ? "primary" : "default"}
-            onClick={() => handleRoleButtonClick("Licenciado")}
-            className="mx-2"
-          >
-            Licenciado
-          </Button>
+          {
+            roles.map( (rol:RoleI) => (
+              <Button
+                key={rol.name}
+                type={selectedRole === rol.name ? "primary" : "default"}
+                onClick={() => handleRoleButtonClick(rol.name)}
+                className="mx-2"
+              >
+                {rol.description}
+              </Button>
+            ))
+          }
         </div>
       </div>
     </div>
   );
 };
 
-function formDataPersonal() {
+const FormDataPersonal = ({formData, onChange}: FormDataPersonalProps) =>{
   return (
     <div className="flex flex-col w-80">
       <div className="pt-5">
         <label htmlFor="name">Nombres *</label>
         <Input
           name="name"
+          value={formData.name}
+          onChange={onChange}  
           placeholder="digita tus nombres y apellidos &#128512; &#128512;"
+          autoComplete="current-name"
           prefix={<UserOutlined />}
         />
       </div>
 
       <div className="pt-5">
-        <label htmlFor="name">CI</label>
+        <label htmlFor="dni">CI</label>
         <Input
           name="dni"
+          value={formData.dni}
+          onChange={onChange}            
           placeholder="no es obligatorio &#128512; &#128512;"
+          autoComplete="current-dni"
           prefix={<FileOutlined />}
         />
       </div>
 
       <div className="pt-5">
-        <label htmlFor="name">Tel&eacute;fono</label>
+        <label htmlFor="phone">Tel&eacute;fono</label>
         <Input
           name="phone"
+          value={formData.phone}
+          onChange={onChange}            
           placeholder="no es obligatorio &#128512; &#128512;"
+          autoComplete="current-phone"
           prefix={<PhoneOutlined />}
         />
       </div>

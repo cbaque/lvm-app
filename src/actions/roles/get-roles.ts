@@ -1,12 +1,13 @@
 'use server';
 
-import { RoleResponseI } from "@/interfaces/role";
+import { RoleI, RoleResponseI } from "@/interfaces/role";
 import { axios } from "@/libs/axios";
 import { ErrorHandler } from "@/utils";
+import { cache } from "react";
 
 
-export async function getRoles() {
-
+export const getRoles = cache( async() =>    
+{
     try {
 
         const { data } = await axios.get<RoleResponseI>(`/role`);
@@ -16,4 +17,4 @@ export async function getRoles() {
         const { data, message, code } = await ErrorHandler(error);
         return { data, message, code }
     }
-}
+});
