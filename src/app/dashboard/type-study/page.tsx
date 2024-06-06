@@ -1,8 +1,6 @@
 
-import { inter, titleFont } from "@/config/fonts";
-import { Breadcrumb, Space, Tag } from "antd";
-import Table, { TableProps } from "antd/es/table";
-import Image from "next/image";
+import { Breadcrumb} from "antd";
+import GridType from "./GridType";
 
 
 export default function () {
@@ -21,7 +19,9 @@ export default function () {
           }
         ]}
       />
-      <Table />
+      <div className="p-3">
+        <GridType />
+      </div>
     </div>
   );
 }
