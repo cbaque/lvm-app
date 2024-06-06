@@ -2,8 +2,8 @@
 
 import { getUsers } from '@/actions';
 import { UserI } from '@/interfaces/user';
-import { CustomerServiceOutlined, DeleteOutlined, EditOutlined, ReloadOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Drawer, FloatButton, Space, Table, TableProps } from 'antd'
+import { DeleteOutlined, EditOutlined, ReloadOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Drawer, FloatButton, Space, Table, TableProps } from 'antd'
 import React, { useEffect, useState } from 'react'
 import FormNewUser from './FormNewUser';
 import { tokenStore } from '@/store';
@@ -39,7 +39,7 @@ const columns: TableProps<UserI>['columns'] = [
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <EditOutlined title='Editar'  style={{cursor:'pointer', color:'#1677ff'}}/>
+          <EditOutlined title='Editar' style={{cursor:'pointer', color:'#1677ff'}}/>
           <DeleteOutlined title='Eliminar' style={{cursor:'pointer', color:'red'}}/>
         </Space>
       ),
