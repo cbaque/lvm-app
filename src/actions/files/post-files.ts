@@ -1,18 +1,18 @@
 'use server';
 
-import { AuthResponseI } from "@/interfaces/authI";
+import { FileResponseI } from "@/interfaces/file";
 import { UserResponseI } from "@/interfaces/user";
 import { axios } from "@/libs/axios";
 import { ErrorHandler } from "@/utils";
 
 
-export async function postUsers(
-    prevState: AuthResponseI | undefined,
+export async function   postFiles(
+    prevState: FileResponseI | undefined,
     formData: FormData,
 ) {
 
     try {
-        const { data } = await axios.post<UserResponseI>(`/user`, formData);
+        const { data } = await axios.post<FileResponseI>(`/file`, formData);
         return data;
 
     } catch (error: any) {

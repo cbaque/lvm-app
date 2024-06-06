@@ -3,15 +3,17 @@
 import { UserI } from '@/interfaces/user';
 import { DeleteOutlined, EditOutlined, FileAddOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Drawer, FloatButton, Space, Table, TableProps } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FormNewFile from './FormNewFile';
+import { FileI } from '@/interfaces/file';
+import { tokenStore } from '@/store';
+import { getFiles } from '@/actions';
 
-
-const columns: TableProps<UserI>['columns'] = [
+const columns: TableProps<FileI>['columns'] = [
     {
       title: 'Archivo',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
       title: '',
@@ -27,16 +29,34 @@ const columns: TableProps<UserI>['columns'] = [
 
 const GridFiles= () => {
 
-    const [data, setData] = useState<UserI[]>([]);
+    const [data, setData] = useState<FileI[]>([]);
     const [openNew, setOpenNew] = useState(false);
 
     const showOpenNewUser = () => { setOpenNew(true); };
     const closeNewUser = () => { setOpenNew(false); };
 
+    useEffect(() => {
+      tokenStore.persist.rehydrate();
+
+      const loadUsers = async () => {
+        try {
+  
+          const { data } = await getFiles();
+          setData(data);
+  
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      loadUsers();
+
+    }, []);    
+
 
     return (
         <div>
-            <Table columns={columns} size='small' dataSource={data}/>
+            <Table columns={columns} size='small' dataSource={data.map(file => ({ ...file, key: file.id }))}/>
 
             <FloatButton
               shape="circle"
@@ -57,7 +77,9 @@ const GridFiles= () => {
               title="Crear nuevo Archivo"
               width={520}
               open={openNew}
-              onClose={closeNewUser}             
+              onClose={closeNewUser}     
+              keyboard={false}
+              maskClosable={false}        
             >
               <FormNewFile />
 
