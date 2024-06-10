@@ -6,11 +6,11 @@ import React, { useEffect, useState } from 'react'
 import FormNewFile from './FormNewFile';
 import { FileI } from '@/interfaces/file';
 import { useFetchToFiles } from '@/hooks';
+import useFileColumns from '@/hooks/files/columnsGridFiles';
 
 const GridFiles = () => {
 
   const { data, loading } = useFetchToFiles();
-  
   const [openNew, setOpenNew] = useState(false);
 
   const showOpenNewUser = () => { setOpenNew(true); };
@@ -25,24 +25,7 @@ const GridFiles = () => {
     // setOpenNew(true);
   };
 
-  const columns: TableProps<FileI>['columns'] = [
-    {
-      title: 'Archivo',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
-      title: '',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <EditOutlined title='Editar' style={{ cursor: 'pointer', color: '#1677ff' }} onClick={() => editFile(record)} />
-          <DeleteOutlined title='Eliminar' style={{ cursor: 'pointer', color: 'red' }} />
-        </Space>
-      ),
-    }
-  ];
-
+  const columns  = useFileColumns(editFile);
 
   return (
     <div>
