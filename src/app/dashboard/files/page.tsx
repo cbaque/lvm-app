@@ -4,7 +4,7 @@ import GridFiles from "./GridFiles";
 import { AlertProvider } from "@/context/alertContext";
 
 
-export default function () {
+export default function filesPage() {
 
 
   return (

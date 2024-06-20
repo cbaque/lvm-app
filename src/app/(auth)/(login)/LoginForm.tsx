@@ -50,7 +50,7 @@ const LoginForm = () => {
         router.push('/dashboard');
       }
     }
-  }, [state]);
+  }, [state, addUser, addToken, addMenu, router, showAlert]);
 
   return (
     <form className="flex flex-col" action={dispatch}>

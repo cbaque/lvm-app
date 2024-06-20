@@ -5,7 +5,7 @@ import Table, { TableProps } from "antd/es/table";
 import Image from "next/image";
 
 
-export default function() {
+export default function documentsPage() {
 
 
   return (

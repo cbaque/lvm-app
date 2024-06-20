@@ -3,7 +3,7 @@ import { Breadcrumb, Space, Tag } from "antd";
 import GridPatients from "./GridPatients";
 
 
-export default function () {
+export default function patientsPage() {
 
 
   return (

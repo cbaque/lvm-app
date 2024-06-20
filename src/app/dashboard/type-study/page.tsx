@@ -3,7 +3,7 @@ import { Breadcrumb} from "antd";
 import GridType from "./GridType";
 
 
-export default function () {
+export default function typeStudePage() {
 
 
   return (

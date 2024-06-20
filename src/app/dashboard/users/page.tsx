@@ -7,7 +7,7 @@ import GridUsers from "./GridUsers";
 import { CustomerServiceOutlined } from "@ant-design/icons";
 
 
-export default function () {
+export default function userPage() {
 
 
   return (

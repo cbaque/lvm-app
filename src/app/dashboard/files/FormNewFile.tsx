@@ -23,7 +23,7 @@ const FormNewFile = () => {
 
           }
         }
-      }, [state]);
+      }, [state, showAlert]);
 
     return (
         <div>
