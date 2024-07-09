@@ -6,8 +6,11 @@ import { postFiles } from "@/actions";
 import { userStore } from "@/store";
 import { useAlert } from "@/context/alertContext";
 
+interface FormNewFileProps {
+    onClose: () => void;
+  }
 
-const FormNewFile = () => {
+const FormNewFile: React.FC<FormNewFileProps> = ({onClose}) => {
 
     const { showAlert } = useAlert();
     const [state, formAction] = useFormState(postFiles, undefined);
@@ -20,10 +23,11 @@ const FormNewFile = () => {
           if (!state?.code) {
             showAlert(state?.message, "error");
           } else {
-
+            showAlert(state?.message, "success");
+            onClose();
           }
         }
-      }, [state, showAlert]);
+      }, [state, showAlert, onClose]);
 
     return (
         <div>

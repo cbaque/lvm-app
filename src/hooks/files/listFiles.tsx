@@ -29,6 +29,6 @@ export const useFetchToFiles = () => {
     }, []);
   
   
-    return { data,  loading }
+    return { data,  loading, loadFiles }
   
   }

@@ -10,7 +10,7 @@ import useFileColumns from '@/hooks/files/columnsGridFiles';
 
 const GridFiles = () => {
 
-  const { data, loading } = useFetchToFiles();
+  const { data, loading, loadFiles } = useFetchToFiles();
   const [openNew, setOpenNew] = useState(false);
 
   const showOpenNewUser = () => { setOpenNew(true); };
@@ -48,7 +48,7 @@ const GridFiles = () => {
         shape="circle"
         type="default"
         style={{ right: 24 }}
-        // onClick={loadFiles}
+        onClick={loadFiles}
         icon={<ReloadOutlined />}
       />
 
@@ -60,7 +60,7 @@ const GridFiles = () => {
         keyboard={false}
         maskClosable={false}
       >
-        <FormNewFile />
+        <FormNewFile onClose={closeNewUser}/>
 
       </Drawer>
 
