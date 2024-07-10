@@ -10,6 +10,7 @@ export const useFetchToFiles = () => {
   
     const loadFiles = async () => {
       try {
+        debugger
         setLoading(true);
         const { data } = await getFiles();
         setData(data);

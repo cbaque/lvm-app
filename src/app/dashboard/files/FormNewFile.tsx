@@ -10,7 +10,7 @@ interface FormNewFileProps {
     onClose: () => void;
   }
 
-const FormNewFile: React.FC<FormNewFileProps> = ({onClose}) => {
+const FormNewFile: React.FC<FormNewFileProps> = ({ onClose }) => {
 
     const { showAlert } = useAlert();
     const [state, formAction] = useFormState(postFiles, undefined);

@@ -60,7 +60,7 @@ const GridFiles = () => {
         keyboard={false}
         maskClosable={false}
       >
-        <FormNewFile onClose={closeNewUser}/>
+        <FormNewFile onClose={closeNewUser} />
 
       </Drawer>
 

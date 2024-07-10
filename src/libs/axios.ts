@@ -3,10 +3,8 @@
 import axiosBase from 'axios'
 import { cookies } from 'next/headers';
 
-
-
 const instance = axiosBase.create({
-    baseURL: 'http://lvm-api.test/api',
+    baseURL: process.env.API_URL,
     headers: {
       'Content-Type': 'application/json',
     },
