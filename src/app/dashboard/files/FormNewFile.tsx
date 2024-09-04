@@ -1,6 +1,6 @@
 import { FileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { postFiles } from "@/actions";
 import { userStore } from "@/store";
@@ -14,24 +14,19 @@ const FormNewFile: React.FC<FormNewFileProps> = ({ onClose }) => {
 
     const { showAlert } = useAlert();
     const [state, formAction] = useFormState(postFiles, undefined);
-    
-    useEffect(() => {
+    const formRef = useRef<HTMLFormElement>(null);
 
-        userStore.persist.rehydrate();
-    
-        if ( state !== undefined ) {
-          if (!state?.code) {
-            showAlert(state?.message, "error");
-          } else {
-            showAlert(state?.message, "success");
-            onClose();
-          }
-        }
-      }, [state, showAlert, onClose]);
+    useEffect(() => {
+      if (state?.code) {
+        showAlert(state.message, "success");
+        
+        onClose();
+      }
+    }, [state, showAlert, onclose]);
 
     return (
         <div>
-            <form className="flex flex-col" action={formAction}>
+            <form ref={formRef} className="flex flex-col" action={formAction}>
                 <div className="flex flex-col w-80">
                     <div>
                         <label htmlFor="description">Archivo *</label>
