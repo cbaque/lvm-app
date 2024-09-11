@@ -2,20 +2,34 @@
 
 import { DeleteOutlined, EditOutlined, FileAddOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Drawer, FloatButton, Space, Table, TableProps } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import FormNewFile from './FormNewFile';
 import { FileI } from '@/interfaces/file';
 import { useFetchToFiles } from '@/hooks';
 import useFileColumns from '@/hooks/files/columnsGridFiles';
+import { useAlert } from "@/context/alertContext";
 
 const GridFiles = () => {
 
   const { data, loading, loadFiles } = useFetchToFiles();
   const [openNew, setOpenNew] = useState(false);
-
-  const showOpenNewUser = () => { setOpenNew(true); };
-  const closeNewUser = () => { setOpenNew(false); };
   const [editingFile, setEditingFile] = useState<FileI[]>();
+
+  const { showAlert } = useAlert();
+  const alertShown = useRef(false);
+
+  // manejamos estado de exito
+  const [isFormSuccess, setIsFormSuccess] = useState(false);
+
+
+
+  const showOpenNewUser = () => { 
+    console.log(openNew)
+    setOpenNew(true); 
+    alertShown.current = false;
+  };
+
+  const closeNewUser = () => setOpenNew(false);
 
   const editFile = (file: FileI) => {
 
@@ -24,6 +38,15 @@ const GridFiles = () => {
     console.log('guardando', [editingFile])
     // setOpenNew(true);
   };
+
+  const handleSuccess = useCallback(() => {
+    if (!alertShown.current) {
+      showAlert("Archivo creado exitosamente", "success");
+      alertShown.current = true; // Marcar como mostrado
+      setOpenNew(false);
+    }
+    // loadFiles(); // Actualizar la lista de archivos
+  }, [showAlert, loadFiles, setOpenNew]);
 
   const columns  = useFileColumns(editFile);
 
@@ -60,7 +83,7 @@ const GridFiles = () => {
         keyboard={false}
         maskClosable={false}
       >
-        <FormNewFile onClose={closeNewUser} />
+        <FormNewFile onClose={closeNewUser}  onSuccess={handleSuccess}/>
         
       </Drawer>
 

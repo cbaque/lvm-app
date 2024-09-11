@@ -8,9 +8,10 @@ import { useAlert } from "@/context/alertContext";
 
 interface FormNewFileProps {
     onClose: () => void;
+    onSuccess: () => void;
   }
 
-const FormNewFile: React.FC<FormNewFileProps> = ({ onClose }) => {
+const FormNewFile: React.FC<FormNewFileProps> = ({ onClose, onSuccess }) => {
 
     const { showAlert } = useAlert();
     const [state, formAction] = useFormState(postFiles, undefined);
@@ -18,15 +19,16 @@ const FormNewFile: React.FC<FormNewFileProps> = ({ onClose }) => {
 
     useEffect(() => {
       if (state?.code) {
-        showAlert(state.message, "success");
-        
+        formRef.current?.reset();
+        onSuccess();
         onClose();
       }
-    }, [state, showAlert, onclose]);
+    }, [state?.code, onClose, onSuccess, showAlert]);
 
     return (
         <div>
             <form ref={formRef} className="flex flex-col" action={formAction}>
+                                                                    
                 <div className="flex flex-col w-80">
                     <div>
                         <label htmlFor="description">Archivo *</label>
