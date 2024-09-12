@@ -1,54 +1,37 @@
 "use client";
 
-import { DeleteOutlined, EditOutlined, FileAddOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Drawer, FloatButton, Space, Table, TableProps } from 'antd'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { FileAddOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Drawer, FloatButton, Table } from 'antd'
+import React, { useCallback, useState } from 'react'
 import FormNewFile from './FormNewFile';
-import { FileI } from '@/interfaces/file';
 import { useFetchToFiles } from '@/hooks';
 import useFileColumns from '@/hooks/files/columnsGridFiles';
-import { useAlert } from "@/context/alertContext";
+import { FileI } from '@/interfaces/file';
 
 const GridFiles = () => {
 
   const { data, loading, loadFiles } = useFetchToFiles();
   const [openNew, setOpenNew] = useState(false);
-  const [editingFile, setEditingFile] = useState<FileI[]>();
 
-  const { showAlert } = useAlert();
-  const alertShown = useRef(false);
-
-  // manejamos estado de exito
-  const [isFormSuccess, setIsFormSuccess] = useState(false);
-
-
-
-  const showOpenNewUser = () => { 
-    console.log(openNew)
-    setOpenNew(true); 
-    alertShown.current = false;
-  };
-
+  const showOpenNewUser = () => setOpenNew(true);
   const closeNewUser = () => setOpenNew(false);
-
-  const editFile = (file: FileI) => {
-
-    console.log('editando', [file])
-    setEditingFile([file]);
-    console.log('guardando', [editingFile])
-    // setOpenNew(true);
-  };
+  const [editingFile, setEditingFile] = useState<FileI | null>(null);
 
   const handleSuccess = useCallback(() => {
-    if (!alertShown.current) {
-      showAlert("Archivo creado exitosamente", "success");
-      alertShown.current = true; // Marcar como mostrado
-      setOpenNew(false);
-    }
-    // loadFiles(); // Actualizar la lista de archivos
-  }, [showAlert, loadFiles, setOpenNew]);
+    setOpenNew(false);
+    loadFiles();
+  }, [loadFiles]);
 
-  const columns  = useFileColumns(editFile);
+  const handleEdit = useCallback((file: FileI) => {
+    setEditingFile(file);
+    setOpenNew(true);
+  }, []);
+
+  const handleDelete = useCallback((file: FileI) => {
+    loadFiles();
+  }, [loadFiles]);
+
+  const columns  = useFileColumns({onEdit: handleEdit, onDelete: handleDelete});
 
   return (
     <div>
@@ -83,7 +66,7 @@ const GridFiles = () => {
         keyboard={false}
         maskClosable={false}
       >
-        <FormNewFile onClose={closeNewUser}  onSuccess={handleSuccess}/>
+        <FormNewFile onSuccess={ handleSuccess } file={ editingFile } />
         
       </Drawer>
 

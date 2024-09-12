@@ -1,45 +1,61 @@
 import { FileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
-import { useActionState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { postFiles } from "@/actions";
-import { userStore } from "@/store";
+import { postFiles, putFiles } from "@/actions";
+import useForm from "@/hooks/useForm";
 import { useAlert } from "@/context/alertContext";
+import { FileI } from "@/interfaces/file";
+
 
 interface FormNewFileProps {
-    onClose: () => void;
     onSuccess: () => void;
+    file?: FileI | null;
   }
 
-const FormNewFile: React.FC<FormNewFileProps> = ({ onClose, onSuccess }) => {
+const FormNewFile: React.FC<FormNewFileProps> = ({ onSuccess, file }) => {
 
+    const [state, formAction] = useFormState(file?.id ? putFiles : postFiles, undefined);
+    const { description, id, onChange, resetForm, setFormData } = useForm({description: file?.description || undefined, id: file?.id || undefined });
     const { showAlert } = useAlert();
-    const [state, formAction] = useFormState(postFiles, undefined);
-    const formRef = useRef<HTMLFormElement>(null);
+
+    useEffect(() => {   
+        if (state === undefined) return;
+
+        if(state?.code) {
+            showAlert(state?.message, "success");
+            resetForm();
+            onSuccess();
+        } else {
+            showAlert(state?.message, "error");
+        }
+    }, [state]);
 
     useEffect(() => {
-      if (state?.code) {
-        formRef.current?.reset();
-        onSuccess();
-        onClose();
-      }
-    }, [state?.code, onClose, onSuccess, showAlert]);
+        if (file) {
+          setFormData({ description: file.description, id: file.id });
+        } else {
+          resetForm();
+        }
+      }, [file]);
 
     return (
         <div>
-            <form ref={formRef} className="flex flex-col" action={formAction}>
+            <form className="flex flex-col" action={formAction}>
                                                                     
                 <div className="flex flex-col w-80">
-                    <div>
-                        <label htmlFor="description">Archivo *</label>
-                        <Input
+                    <div>                    
+                        <Input type="text"
                         name="description"
                         placeholder="digita el nombre del archivo &#128512; &#128512;"
                         autoComplete="current-name"
+                        value={description}
+                        onChange={onChange}
                         prefix={<FileOutlined />}
                         />
                     </div>
 
+                    <input type="hidden" value={id} onChange={onChange} name="id"/>
                     <div style={{ marginTop: 24 }}>
                         <SaveFileButton />
                     </div>
