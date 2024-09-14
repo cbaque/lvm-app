@@ -7,11 +7,14 @@ import FormNewFile from './FormNewFile';
 import { useFetchToFiles } from '@/hooks';
 import useFileColumns from '@/hooks/files/columnsGridFiles';
 import { FileI } from '@/interfaces/file';
+import { deleteFiles } from '@/actions/files/delete';
+import { useAlert } from '@/context/alertContext';
 
 const GridFiles = () => {
 
   const { data, loading, loadFiles } = useFetchToFiles();
   const [openNew, setOpenNew] = useState(false);
+  const { showAlert } = useAlert();
 
   const showOpenNewUser = () => setOpenNew(true);
   const closeNewUser = () => {
@@ -30,8 +33,17 @@ const GridFiles = () => {
     setOpenNew(true);
   }, []);
 
-  const handleDelete = useCallback((file: FileI) => {
-    loadFiles();
+  const handleDelete = useCallback(async (file: FileI) => {
+    const r = confirm(`Esta seguro de eliminar el archivo?`)
+    if (!r) return false;
+    
+    const response = await deleteFiles(file?.id)
+    if( response.code ) {
+      showAlert(response?.message, "success");
+      loadFiles();
+    }else{
+      showAlert(response?.message, "error");
+    }
   }, [loadFiles]);
 
   const columns  = useFileColumns({onEdit: handleEdit, onDelete: handleDelete});
