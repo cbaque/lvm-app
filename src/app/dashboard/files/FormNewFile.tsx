@@ -2,7 +2,7 @@ import { FileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { postFiles, putFiles } from "@/actions";
+import { saveFiles } from "@/actions";
 import useForm from "@/hooks/useForm";
 import { useAlert } from "@/context/alertContext";
 import { FileI } from "@/interfaces/file";
@@ -15,8 +15,8 @@ interface FormNewFileProps {
 
 const FormNewFile: React.FC<FormNewFileProps> = ({ onSuccess, file }) => {
 
-    const [state, formAction] = useFormState(file?.id ? putFiles : postFiles, undefined);
-    const { description, id, onChange, resetForm, setFormData } = useForm({description: file?.description || undefined, id: file?.id || undefined });
+    const [state, formAction] = useFormState(saveFiles, undefined);
+    const { description, id, onChange, resetForm, setFormData } = useForm({description: '', id: ''});
     const { showAlert } = useAlert();
 
     useEffect(() => {   
@@ -32,16 +32,28 @@ const FormNewFile: React.FC<FormNewFileProps> = ({ onSuccess, file }) => {
     }, [state]);
 
     useEffect(() => {
-        if (file) {
-          setFormData({ description: file.description, id: file.id });
+
+        if (file !== null) {
+            setFormData({ description: file?.description || '', id: String(file?.id) || ''  });
         } else {
-          resetForm();
+            resetForm();
         }
       }, [file]);
 
+
+      const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('description', description);
+        formData.append('id', id);
+        formAction(formData);
+    };
+
+    const buttonText = file ? "Actualizar" : "Crear";
+
     return (
         <div>
-            <form className="flex flex-col" action={formAction}>
+            <form className="flex flex-col" onSubmit={handleSubmit}>
                                                                     
                 <div className="flex flex-col w-80">
                     <div>                    
@@ -49,15 +61,15 @@ const FormNewFile: React.FC<FormNewFileProps> = ({ onSuccess, file }) => {
                         name="description"
                         placeholder="digita el nombre del archivo &#128512; &#128512;"
                         autoComplete="current-name"
-                        value={description}
+                        value={description || ''}
                         onChange={onChange}
                         prefix={<FileOutlined />}
                         />
                     </div>
 
-                    <input type="hidden" value={id} onChange={onChange} name="id"/>
+
                     <div style={{ marginTop: 24 }}>
-                        <SaveFileButton />
+                        <SaveFileButton text={buttonText} />
                     </div>
 
                 </div>                
@@ -67,7 +79,11 @@ const FormNewFile: React.FC<FormNewFileProps> = ({ onSuccess, file }) => {
 
 }
 
-function SaveFileButton() {
+interface SaveFileButtonProps {
+    text: string;
+}
+
+function SaveFileButton({text} : SaveFileButtonProps) {
     const { pending } = useFormStatus();
    
     return (
@@ -78,7 +94,7 @@ function SaveFileButton() {
             disabled={pending}
             loading={!!pending}
         >
-            Crear
+            {text}
         </Button>  
     );
   }

@@ -14,7 +14,7 @@ const useForm = <T> (initState: T) => {
     const resetForm = () => {
         setFormData({ ...initState })
     }
-
+    
 
     return {
         ...formData,

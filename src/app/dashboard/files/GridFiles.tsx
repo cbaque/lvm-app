@@ -14,7 +14,10 @@ const GridFiles = () => {
   const [openNew, setOpenNew] = useState(false);
 
   const showOpenNewUser = () => setOpenNew(true);
-  const closeNewUser = () => setOpenNew(false);
+  const closeNewUser = () => {
+    setOpenNew(false);
+    setEditingFile(null)
+  }
   const [editingFile, setEditingFile] = useState<FileI | null>(null);
 
   const handleSuccess = useCallback(() => {
@@ -59,7 +62,7 @@ const GridFiles = () => {
       />
 
       <Drawer
-        title="Crear nuevo Archivo"
+        title={editingFile ? " Editar Archivo" : "Crear nuevo Archivo"} 
         width={520}
         open={openNew}
         onClose={closeNewUser}
